@@ -1,10 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\AuthController;  // CORRECTION: 'API' au lieu de 'Api'
-use App\Http\Controllers\API\UserController;  // CORRECTION: 'API' au lieu de 'Api'
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\ReservationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,7 +36,7 @@ Route::prefix('auth')->group(function () {
         $request->fulfill();
 
         return response()->json([
-            'success' => true,  // CORRECTION: Ajout du champ success
+            'success' => true,
             'message' => 'Email vérifié avec succès'
         ]);
 
@@ -47,7 +48,7 @@ Route::prefix('auth')->group(function () {
         $request->user()->sendEmailVerificationNotification();
 
         return response()->json([
-            'success' => true,  // CORRECTION: Ajout du champ success
+            'success' => true,
             'message' => 'Lien de vérification renvoyé avec succès'
         ]);
 
@@ -65,14 +66,14 @@ Route::prefix('auth')->group(function () {
 
         Route::post('/logout', [AuthController::class, 'logout']);
 
-        // CORRECTION: Routes CRUD complètes
+        // Routes CRUD complètes
         Route::get('/users', [UserController::class, 'index']);
         Route::get('/users/{id}', [UserController::class, 'show']);
         Route::put('/users/{id}', [UserController::class, 'update']);     
         Route::patch('/users/{id}', [UserController::class, 'update']);   
         Route::delete('/users/{id}', [UserController::class, 'destroy']); 
         
-        // CORRECTION: Route pour rafraîchir le token (optionnel)
+        // Route pour rafraîchir le token
         Route::post('/refresh-token', function (Request $request) {
             $request->user()->tokens()->delete();
             $token = $request->user()->createToken('auth_token')->plainTextToken;
@@ -82,10 +83,13 @@ Route::prefix('auth')->group(function () {
                 'token_type' => 'Bearer'
             ]);
         });
+
+        // Routes de réservations protégées
+        Route::apiResource('reservations', ReservationController::class);
     });
 });
 
-// CORRECTION: Route de test pour vérifier que l'API fonctionne
+// Route de test pour vérifier que l'API fonctionne
 Route::get('/health', function () {
     return response()->json([
         'status' => 'OK',
