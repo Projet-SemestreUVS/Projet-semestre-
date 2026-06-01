@@ -14,13 +14,18 @@ return Application::configure(basePath: dirname(__DIR__))
 =======
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
+<<<<<<< HEAD
         api: __DIR__.'/../routes/api.php',
+=======
+        api: __DIR__.'/../routes/api.php',  //
+>>>>>>> origin/feature/awa
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
 >>>>>>> origin/feature/adama
     )
 
     ->withMiddleware(function (Middleware $middleware): void {
+<<<<<<< HEAD
 <<<<<<< HEAD
         $middleware->alias([
             'admin' => AdminMiddleware::class,
@@ -29,6 +34,10 @@ return Application::configure(basePath: dirname(__DIR__))
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
 >>>>>>> origin/feature/adama
         ]);
+=======
+        $middleware->statefulApi();
+        //
+>>>>>>> origin/feature/awa
     })
 
     ->withExceptions(function (Exceptions $exceptions): void {

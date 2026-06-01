@@ -7,7 +7,8 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\ReservationController;
 use App\Http\Controllers\API\MessageController;
-use App\Http\Controllers\AvisController;
+use App\Http\Controllers\API\AvisController;
+use App\Http\Controllers\API\NotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -98,6 +99,21 @@ Route::prefix('auth')->group(function () {
 
         // Routes des avis protégées
         Route::apiResource('avis', AvisController::class);
+
+        // Routes des notifications protégées
+        Route::get('/notifications', [NotificationController::class, 'index']);
+        Route::post('/notifications', [NotificationController::class, 'store']);
+        Route::get('/notifications/{id}', [NotificationController::class, 'show']);
+        Route::put('/notifications/{id}', [NotificationController::class, 'update']);
+        Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
+
+        // Route test
+        Route::get('/applications', function () {
+            return response()->json([
+                'message' => 'Route applications OK',
+                'user' => auth()->user(),
+            ]);
+        });
     });
 });
 
