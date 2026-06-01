@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\ReservationController;
+use App\Http\Controllers\API\MessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -86,6 +87,13 @@ Route::prefix('auth')->group(function () {
 
         // Routes de réservations protégées
         Route::apiResource('reservations', ReservationController::class);
+
+        // Routes de messages protégées
+        Route::get('/messages', [MessageController::class, 'index']);
+        Route::post('/messages', [MessageController::class, 'store']);
+        Route::get('/messages/{id}', [MessageController::class, 'show']);
+        Route::put('/messages/{id}', [MessageController::class, 'update']);
+        Route::delete('/messages/{id}', [MessageController::class, 'destroy']);
     });
 });
 
