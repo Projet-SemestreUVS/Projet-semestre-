@@ -10,6 +10,7 @@ use App\Http\Controllers\API\MessageController;
 use App\Http\Controllers\API\AvisController;
 use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\API\ServiceController;
+use App\Http\Controllers\API\CategoriController;
 
 /*
 |--------------------------------------------------------------------------
@@ -143,5 +144,4 @@ Route::get('/test', function () {
     ]);
 });
 
-
-
+Route::apiResource('categories', CategoriController::class);
