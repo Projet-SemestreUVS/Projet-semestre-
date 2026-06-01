@@ -13,12 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('services');
-
         Schema::create('services', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->unsignedBigInteger('categorie_id')->nullable();
+            $table->foreignId('user_id')
+                  ->constrained('users')
+                  ->cascadeOnDelete();
             $table->string('titre');
             $table->text('description')->nullable();
             $table->decimal('tarif', 10, 2)->nullable();
