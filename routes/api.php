@@ -7,6 +7,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\ReservationController;
 use App\Http\Controllers\API\MessageController;
+use App\Http\Controllers\AvisController;
 
 /*
 |--------------------------------------------------------------------------
@@ -94,6 +95,9 @@ Route::prefix('auth')->group(function () {
         Route::get('/messages/{id}', [MessageController::class, 'show']);
         Route::put('/messages/{id}', [MessageController::class, 'update']);
         Route::delete('/messages/{id}', [MessageController::class, 'destroy']);
+
+        // Routes des avis protégées
+        Route::apiResource('avis', AvisController::class);
     });
 });
 
