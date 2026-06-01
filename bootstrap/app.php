@@ -15,10 +15,14 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
 <<<<<<< HEAD
+<<<<<<< HEAD
         api: __DIR__.'/../routes/api.php',
 =======
         api: __DIR__.'/../routes/api.php',  //
 >>>>>>> origin/feature/awa
+=======
+        api: __DIR__.'/../routes/api.php',
+>>>>>>> origin/feature/ibrahima
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
 >>>>>>> origin/feature/adama

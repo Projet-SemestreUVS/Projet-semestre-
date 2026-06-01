@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+<<<<<<< HEAD
 
         /*
         |--------------------------------------------------------------------------
@@ -79,5 +80,12 @@ class DatabaseSeeder extends Seeder
         */
 
         Notification::factory(50)->create();
+=======
+        // Call custom seeders to ensure test users and categories exist
+        $this->call([
+            \Database\Seeders\UsersTableSeeder::class,
+            \Database\Seeders\CategoriesTableSeeder::class,
+        ]);
+>>>>>>> origin/feature/ibrahima
     }
 }

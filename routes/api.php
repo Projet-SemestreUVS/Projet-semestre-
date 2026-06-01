@@ -9,6 +9,7 @@ use App\Http\Controllers\API\ReservationController;
 use App\Http\Controllers\API\MessageController;
 use App\Http\Controllers\API\AvisController;
 use App\Http\Controllers\API\NotificationController;
+use App\Http\Controllers\API\ServiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -107,6 +108,16 @@ Route::prefix('auth')->group(function () {
         Route::put('/notifications/{id}', [NotificationController::class, 'update']);
         Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
 
+        // Routes des services protégées
+        Route::controller(ServiceController::class)->group(function () {
+            Route::post('/creationServices', 'store');
+            Route::get('/listeServices', 'index');
+            Route::get('/detailServices/{service}', 'show');
+            Route::put('/updateServices/{service}', 'update');
+            Route::delete('/suppressionServices/{service}', 'destroy');
+            Route::get('/recupererServices', 'myServices');
+        });
+
         // Route test
         Route::get('/applications', function () {
             return response()->json([
@@ -124,3 +135,47 @@ Route::get('/health', function () {
         'message' => 'API Laravel fonctionnelle'
     ]);
 });
+
+// Route test API
+Route::get('/test', function () {
+    return response()->json([
+        'message' => 'API fonctionne'
+    ]);
+});
+=======
+
+
+<?php
+
+use App\Http\Controllers\API\ServiceController;
+use Illuminate\Support\Facades\Route;
+
+// Test API
+Route::get('/test', function () {
+    return response()->json([
+        'message' => 'API fonctionne'
+    ]);
+});
+
+// Routes Services
+Route::controller(ServiceController::class)->group(function () {
+
+    // Créer un service
+    Route::post('/creationServices', 'store');
+
+    // Liste des services
+    Route::get('/listeServices', 'index');
+
+    // Détail d’un service (avec ID)
+    Route::get('/detailServices/{service}', 'show');
+
+    // Modifier un service (avec ID)
+    Route::put('/updateServices/{service}', 'update');
+
+    // Supprimer un service (avec ID)
+    Route::delete('/suppressionServices/{service}', 'destroy');
+
+    // Services de l’utilisateur connecté
+    Route::get('/recupererServices', 'myServices');
+});
+>>>>>>> origin/feature/ibrahima
