@@ -88,9 +88,12 @@ Route::prefix('auth')->group(function () {
                 'token_type' => 'Bearer'
             ]);
         });
-
+      
         // Routes de réservations protégées
         Route::apiResource('reservations', ReservationController::class);
+        
+         // Routes de catégorie protégées
+        Route::apiResource('categories', CategoriController::class);
 
         // Routes de messages protégées
         Route::get('/messages', [MessageController::class, 'index']);
@@ -144,4 +147,4 @@ Route::get('/test', function () {
     ]);
 });
 
-Route::apiResource('categories', CategoriController::class);
+
