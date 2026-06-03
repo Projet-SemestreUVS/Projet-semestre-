@@ -7,17 +7,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminMiddleware
+class PrestataireMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->role === 'admin') {
+        if (Auth::check() && Auth::user()->role === 'prestataire') {
             return $next($request);
         }
 
         return response()->json([
             'success' => false,
-            'message' => 'Accès refusé. Autorisation Administrateur requise.'
+            'message' => 'Accès refusé. Réservé aux prestataires de services.'
         ], 403);
     }
 }
