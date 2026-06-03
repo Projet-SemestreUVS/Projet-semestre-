@@ -91,7 +91,8 @@ Route::prefix('auth')->group(function () {
 
         // Routes de réservations protégées
         Route::apiResource('reservations', ReservationController::class);
-
+        //Routes categories
+        Route::apiResource('categories', CategoriController::class);
         // Routes de messages protégées
         Route::get('/messages', [MessageController::class, 'index']);
         Route::post('/messages', [MessageController::class, 'store']);
@@ -144,4 +145,4 @@ Route::get('/test', function () {
     ]);
 });
 
-Route::apiResource('categories', CategoriController::class);
+
