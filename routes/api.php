@@ -1,11 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-<<<<<<< HEAD
-use App\Http\Controllers\API\CategoriController;
-
-Route::apiResource('categories', CategoriController::class);
-=======
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\API\AuthController;
@@ -15,6 +10,8 @@ use App\Http\Controllers\API\MessageController;
 use App\Http\Controllers\API\AvisController;
 use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\API\ServiceController;
+use App\Http\Controllers\API\CategoriController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -105,6 +102,9 @@ Route::prefix('auth')->group(function () {
 
         // Routes des avis protégées
         Route::apiResource('avis', AvisController::class);
+        // Routes des cate protégées
+        Route::apiResource('categories', CategoriController::class);
+
 
         // Routes des notifications protégées
         Route::get('/notifications', [NotificationController::class, 'index']);
@@ -122,6 +122,7 @@ Route::prefix('auth')->group(function () {
             Route::delete('/suppressionServices/{service}', 'destroy');
             Route::get('/recupererServices', 'myServices');
         });
+
 
         // Route test
         Route::get('/applications', function () {
@@ -150,4 +151,4 @@ Route::get('/test', function () {
 
 
 
->>>>>>> origin/feature/abdoulaye
+

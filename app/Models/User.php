@@ -2,25 +2,17 @@
 
 namespace App\Models;
 
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-<<<<<<< HEAD
 use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmailContract
 {
-    use HasApiTokens, HasFactory, Notifiable, MustVerifyEmailTrait;
-=======
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-class User extends Authenticatable
-{
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable;
->>>>>>> origin/feature/awa
+    use HasApiTokens, HasFactory, Notifiable, MustVerifyEmailTrait;
 
     protected $fillable = [
         'nom',
