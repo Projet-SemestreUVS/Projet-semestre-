@@ -101,6 +101,8 @@ Route::prefix('auth')->group(function () {
 
         // Routes des avis protégées
         Route::apiResource('avis', AvisController::class);
+        // Routes des catégories protégées
+        Route::apiResource('categories', CategoriController::class);
 
         // Routes des notifications protégées
         Route::get('/notifications', [NotificationController::class, 'index']);
@@ -144,4 +146,4 @@ Route::get('/test', function () {
     ]);
 });
 
-Route::apiResource('categories', CategoriController::class);
+
