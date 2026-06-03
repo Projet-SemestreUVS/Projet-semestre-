@@ -13,6 +13,7 @@ use App\Http\Controllers\API\ServiceController;
 use App\Http\Controllers\API\CategoriController;
 
 
+
 /*
 |--------------------------------------------------------------------------
 | AUTH ROUTES
@@ -92,6 +93,8 @@ Route::prefix('auth')->group(function () {
 
         // Routes de réservations protégées
         Route::apiResource('reservations', ReservationController::class);
+        // Routes de categories protégées
+        Route::apiResource('categories', CategoriController::class);
 
         // Routes de messages protégées
         Route::get('/messages', [MessageController::class, 'index']);
@@ -102,9 +105,6 @@ Route::prefix('auth')->group(function () {
 
         // Routes des avis protégées
         Route::apiResource('avis', AvisController::class);
-        // Routes des cate protégées
-        Route::apiResource('categories', CategoriController::class);
-
 
         // Routes des notifications protégées
         Route::get('/notifications', [NotificationController::class, 'index']);
@@ -122,7 +122,6 @@ Route::prefix('auth')->group(function () {
             Route::delete('/suppressionServices/{service}', 'destroy');
             Route::get('/recupererServices', 'myServices');
         });
-
 
         // Route test
         Route::get('/applications', function () {

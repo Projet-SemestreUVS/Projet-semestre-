@@ -2,17 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
-use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+<<<<<<< HEAD
+use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
+use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 
 class User extends Authenticatable implements MustVerifyEmailContract
 {
-    /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable, MustVerifyEmailTrait;
+=======
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+class User extends Authenticatable
+{
+    /** @use HasFactory<UserFactory> */
+    use HasApiTokens, HasFactory, Notifiable;
+>>>>>>> origin/feature/awa
 
     protected $fillable = [
         'nom',
@@ -99,12 +107,12 @@ class User extends Authenticatable implements MustVerifyEmailContract
 
     public function messagesEnvoyes()
     {
-        return $this->hasMany(Message::class, 'expediteur_id');
+        return $this->hasMany(Message::class, 'sender_id');
     }
 
     public function messagesRecus()
     {
-        return $this->hasMany(Message::class, 'destinataire_id');
+        return $this->hasMany(Message::class, 'receiver_id');
     }
 
     public function notifications()
