@@ -17,7 +17,6 @@ class User extends Authenticatable implements MustVerifyEmailContract
         'nom',
         'prenom',
         'email',
-        'email_verified_at',  // CORRECTION: Ajouté dans fillable
         'password',
         'role',
         'telephone',

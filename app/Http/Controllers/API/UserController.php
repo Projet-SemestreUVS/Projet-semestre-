@@ -132,4 +132,43 @@ class UserController extends Controller
             ], 404);
         }
     }
+
+            /**
+         * Uploader une photo de profil
+         */
+        public function uploadPhoto(Request $request)
+        {
+            try {
+                $validator = Validator::make($request->all(), [
+                    'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                ]);
+                
+                if ($validator->fails()) {
+                    return response()->json([
+                        'success' => false,
+                        'errors' => $validator->errors()
+                    ], 422);
+                }
+                
+                $user = $request->user();
+                $file = $request->file('photo');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('profiles', $filename, 'public');
+                
+                $user->photo = '/storage/' . $path;
+                $user->save();
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Photo mise à jour',
+                    'photo_url' => $user->photo
+                ]);
+                
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erreur: ' . $e->getMessage()
+                ], 500);
+            }
+        }
 }
