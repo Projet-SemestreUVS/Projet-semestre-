@@ -244,4 +244,47 @@ class AuthController extends Controller
 
         ]);
     }
+
+            /**
+         * Changer le mot de passe
+         */
+        public function changePassword(Request $request)
+        {
+            try {
+                $validator = Validator::make($request->all(), [
+                    'current_password' => 'required',
+                    'new_password' => 'required|min:6|confirmed',
+                ]);
+                
+                if ($validator->fails()) {
+                    return response()->json([
+                        'success' => false,
+                        'errors' => $validator->errors()
+                    ], 422);
+                }
+                
+                $user = $request->user();
+                
+                if (!Hash::check($request->current_password, $user->password)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Mot de passe actuel incorrect'
+                    ], 422);
+                }
+                
+                $user->password = Hash::make($request->new_password);
+                $user->save();
+                
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Mot de passe modifié avec succès'
+                ]);
+                
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erreur: ' . $e->getMessage()
+                ], 500);
+            }
+        }
 }

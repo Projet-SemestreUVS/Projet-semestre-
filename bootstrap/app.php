@@ -16,6 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'admin' => AdminMiddleware::class,
+            'prestataire' => \App\Http\Middleware\PrestataireMiddleware::class,
+            'demandeur' => \App\Http\Middleware\DemandeurMiddleware::class,
         ]);
 
         $middleware->statefulApi();
