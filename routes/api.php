@@ -50,6 +50,7 @@ Route::prefix('auth')->group(function () {
     */
 
     Route::post('/register', [AuthController::class, 'register']);
+
     Route::post('/login', [AuthController::class, 'login']);
 
     /*
@@ -61,6 +62,7 @@ Route::prefix('auth')->group(function () {
     Route::get('/email/verify/{id}/{hash}', function (
         EmailVerificationRequest $request
     ) {
+
         $request->fulfill();
 
         return response()->json([
@@ -68,12 +70,13 @@ Route::prefix('auth')->group(function () {
             'message' => 'Email vérifié avec succès'
         ]);
     })
-        ->middleware(['auth:sanctum', 'signed'])
-        ->name('verification.verify');
+    ->middleware(['auth:sanctum', 'signed'])
+    ->name('verification.verify');
 
     Route::post('/email/verification-notification', function (
         Request $request
     ) {
+
         $request
             ->user()
             ->sendEmailVerificationNotification();
@@ -83,10 +86,10 @@ Route::prefix('auth')->group(function () {
             'message' => 'Lien de vérification envoyé'
         ]);
     })
-        ->middleware([
-            'auth:sanctum',
-            'throttle:6,1'
-        ]);
+    ->middleware([
+        'auth:sanctum',
+        'throttle:6,1'
+    ]);
 
     /*
     |--------------------------------------------------------------------------
@@ -105,27 +108,42 @@ Route::prefix('auth')->group(function () {
         |--------------------------------------------------------------------------
         */
 
-        Route::get('/profile', [AuthController::class, 'profile']);
-        Route::get('/me', [AuthController::class, 'profile']);
-        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::get(
+            '/profile',
+            [AuthController::class, 'profile']
+        );
 
-        Route::post('/refresh-token', function (Request $request) {
-            $request
-                ->user()
-                ->tokens()
-                ->delete();
+        Route::get(
+            '/me',
+            [AuthController::class, 'profile']
+        );
 
-            $token = $request
-                ->user()
-                ->createToken('auth_token')
-                ->plainTextToken;
+        Route::post(
+            '/logout',
+            [AuthController::class, 'logout']
+        );
 
-            return response()->json([
-                'success' => true,
-                'token' => $token,
-                'token_type' => 'Bearer'
-            ]);
-        });
+        Route::post(
+            '/refresh-token',
+            function (Request $request) {
+
+                $request
+                    ->user()
+                    ->tokens()
+                    ->delete();
+
+                $token = $request
+                    ->user()
+                    ->createToken('auth_token')
+                    ->plainTextToken;
+
+                return response()->json([
+                    'success' => true,
+                    'token' => $token,
+                    'token_type' => 'Bearer'
+                ]);
+            }
+        );
 
         /*
         |--------------------------------------------------------------------------
@@ -133,7 +151,10 @@ Route::prefix('auth')->group(function () {
         |--------------------------------------------------------------------------
         */
 
-        Route::apiResource('users', UserController::class);
+        Route::apiResource(
+            'users',
+            UserController::class
+        );
 
         /*
         |--------------------------------------------------------------------------
@@ -141,8 +162,15 @@ Route::prefix('auth')->group(function () {
         |--------------------------------------------------------------------------
         */
 
-        Route::apiResource('services', ServiceController::class);
-        Route::get('/mes-services', [ServiceController::class, 'myServices']);
+        Route::apiResource(
+            'services',
+            ServiceController::class
+        );
+
+        Route::get(
+            '/mes-services',
+            [ServiceController::class, 'myServices']
+        );
 
         /*
         |--------------------------------------------------------------------------
@@ -150,7 +178,10 @@ Route::prefix('auth')->group(function () {
         |--------------------------------------------------------------------------
         */
 
-        Route::apiResource('reservations', ReservationController::class);
+        Route::apiResource(
+            'reservations',
+            ReservationController::class
+        );
 
         /*
         |--------------------------------------------------------------------------
@@ -158,8 +189,11 @@ Route::prefix('auth')->group(function () {
         |--------------------------------------------------------------------------
         */
 
-        Route::apiResource('avis', AvisController::class);
-        Route::patch('/avis/{id}/signaler', [AvisController::class, 'signaler']);
+        Route::apiResource(
+            'avis',
+            AvisController::class
+        );
+         Route::patch('/avis/{id}/signaler', [AvisController::class, 'signaler']); // Route pour signaler
 
         /*
         |--------------------------------------------------------------------------
@@ -167,7 +201,10 @@ Route::prefix('auth')->group(function () {
         |--------------------------------------------------------------------------
         */
 
-        Route::apiResource('categories', CategoriController::class);
+        Route::apiResource(
+            'categories',
+            CategoriController::class
+        );
 
         /*
         |--------------------------------------------------------------------------
@@ -175,8 +212,11 @@ Route::prefix('auth')->group(function () {
         |--------------------------------------------------------------------------
         */
 
-        Route::apiResource('messages', MessageController::class);
-        Route::get('/messages/conversations', [MessageController::class, 'conversations']);
+        Route::apiResource(
+            'messages',
+            MessageController::class
+        );
+         Route::get('/messages/conversations', [MessageController::class, 'conversations']);
         Route::get('/messages/user/{userId}', [MessageController::class, 'messagesWithUser']);
 
         /*
@@ -185,8 +225,11 @@ Route::prefix('auth')->group(function () {
         |--------------------------------------------------------------------------
         */
 
-        Route::apiResource('notifications', NotificationController::class);
-        Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+        Route::apiResource(
+            'notifications',
+            NotificationController::class
+        );
+         Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
 
         /*
         |--------------------------------------------------------------------------
@@ -194,16 +237,19 @@ Route::prefix('auth')->group(function () {
         |--------------------------------------------------------------------------
         */
 
-        Route::get('/admin/statistiques', [StatistiqueController::class, 'index']);
+        Route::get(
+            '/admin/statistiques',
+            [StatistiqueController::class, 'index']
+        );
 
-        // Upload photo de profil
-        Route::post('/users/upload-photo', [UserController::class, 'uploadPhoto']);
-
-        // Changer le mot de passe
-        Route::post('/change-password', [AuthController::class, 'changePassword']);
-
-        // Mettre à jour le profil
-        Route::put('/users/{id}', [UserController::class, 'update']);
+          // Upload photo de profil
+            Route::post('/users/upload-photo', [UserController::class, 'uploadPhoto']);
+            
+            // Changer le mot de passe
+            Route::post('/auth/change-password', [AuthController::class, 'changePassword']);
+            
+            // Mettre à jour le profil
+            Route::put('/users/{id}', [UserController::class, 'update']);
 
         /*
         |--------------------------------------------------------------------------
@@ -212,6 +258,7 @@ Route::prefix('auth')->group(function () {
         */
 
         Route::get('/applications', function () {
+
             return response()->json([
                 'success' => true,
                 'message' => 'Route applications OK',
@@ -231,6 +278,7 @@ Route::middleware([
     'auth:sanctum',
     'admin'
 ])->get('/test-admin', function () {
+
     return response()->json([
         'success' => true,
         'message' => 'Middleware Admin OK'
@@ -241,6 +289,7 @@ Route::middleware([
     'auth:sanctum',
     'prestataire'
 ])->get('/test-prestataire', function () {
+
     return response()->json([
         'success' => true,
         'message' => 'Middleware Prestataire OK'
@@ -251,6 +300,7 @@ Route::middleware([
     'auth:sanctum',
     'demandeur'
 ])->get('/test-demandeur', function () {
+
     return response()->json([
         'success' => true,
         'message' => 'Middleware Demandeur OK'
