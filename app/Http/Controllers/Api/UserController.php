@@ -10,7 +10,6 @@ class UserController extends Controller
 {
     /**
      * Affichage de l'utilisateur connecté
-     * Retourne les informations de l'utilisateur qui est actuellement connecté.
      */
     public function connectedUser(Request $request)
     {
@@ -33,7 +32,6 @@ class UserController extends Controller
 
     /**
      * Récupération de tous les utilisateurs
-     * Retourne la liste COMPLÈTE de TOUS les utilisateurs (demandeurs + prestataires).
      */
     public function allUser()
     {
@@ -46,7 +44,6 @@ class UserController extends Controller
 
     /**
      * Récupération des demandeurs uniquement
-     * Retourne uniquement les utilisateurs qui ont le rôle demandeur.
      */
     public function getDemandeurs()
     {
@@ -60,7 +57,6 @@ class UserController extends Controller
 
     /**
      * Récupération des prestataires uniquement
-     * Retourne uniquement les utilisateurs qui ont le rôle prestataire.
      */
     public function getPrestataires()
     {
@@ -74,7 +70,6 @@ class UserController extends Controller
 
     /**
      * Afficher un utilisateur spécifique
-     * Affiche les détails d'UN SEUL utilisateur spécifique par son ID.
      */
     public function showUser(string $id)
     {
@@ -95,7 +90,6 @@ class UserController extends Controller
 
     /**
      * Mettre à jour un utilisateur
-     * Modifie les informations d'un utilisateur existant.
      */
     public function updateUser(Request $request, string $id)
     {
@@ -108,7 +102,6 @@ class UserController extends Controller
             ], 404);
         }
         
-        // Validation des données
         $request->validate([
             'nom' => 'sometimes|string|max:255',
             'prenom' => 'sometimes|string|max:255',
@@ -118,7 +111,6 @@ class UserController extends Controller
             'localisation' => 'nullable|string|max:255'
         ]);
         
-        // Mise à jour des champs
         if ($request->has('nom')) {
             $user->nom = $request->nom;
         }
@@ -149,7 +141,6 @@ class UserController extends Controller
 
     /**
      * Supprimer un utilisateur
-     * Supprime définitivement un utilisateur de la base de données.
      */
     public function destroyUser(string $id)
     {
@@ -171,8 +162,7 @@ class UserController extends Controller
     }
 
     /**
-     * Rechercher des prestataires par localisation
-     * Recherche des prestataires par localisation ou par nom.
+     * Rechercher des prestataires
      */
     public function searchPrestataires(Request $request)
     {
@@ -199,8 +189,7 @@ class UserController extends Controller
     }
 
     /**
-     * Rechercher des demandeurs par localisation
-     * Recherche des demandeurs par localisation ou par nom.
+     * Rechercher des demandeurs
      */
     public function searchDemandeurs(Request $request)
     {
@@ -228,7 +217,6 @@ class UserController extends Controller
 
     /**
      * Profil complet d'un utilisateur avec ses statistiques
-     * Retourne un profil COMPLET avec des statistiques (services, avis, notes).
      */
     public function profileUser(string $id)
     {

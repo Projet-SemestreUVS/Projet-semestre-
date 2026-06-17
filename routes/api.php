@@ -16,10 +16,11 @@ use App\Http\Controllers\API\StatistiqueController;
 
 /*
 |--------------------------------------------------------------------------
-| TEST API
+| ROUTES API PUBLIQUES (SANS AUTH)
 |--------------------------------------------------------------------------
 */
 
+// Routes publiques - DOIVENT être définies AVANT les routes protégées
 Route::get('/health', function () {
     return response()->json([
         'success' => true,
@@ -35,6 +36,12 @@ Route::get('/test', function () {
     ]);
 });
 
+// Routes publiques pour les services et catégories
+Route::get('/services', [ServiceController::class, 'index']);
+Route::get('/services/{id}', [ServiceController::class, 'show']);
+Route::get('/categories', [CategoriController::class, 'index']);
+Route::get('/categories/{id}', [CategoriController::class, 'show']);
+
 /*
 |--------------------------------------------------------------------------
 | AUTHENTIFICATION
@@ -42,225 +49,82 @@ Route::get('/test', function () {
 */
 Route::prefix('auth')->group(function () {
 
-    /*
-    |--------------------------------------------------------------------------
-    | REGISTER & LOGIN
-    |--------------------------------------------------------------------------
-    */
-
+    // Register & Login (public)
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
 
-    /*
-    |--------------------------------------------------------------------------
-    | EMAIL VERIFICATION
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get('/email/verify/{id}/{hash}', function (
-        EmailVerificationRequest $request
-    ) {
-
+    // Email Verification (public avec middleware spécifique)
+    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
         $request->fulfill();
-
         return response()->json([
             'success' => true,
             'message' => 'Email vérifié avec succès'
         ]);
-    })
-    ->middleware(['auth:sanctum', 'signed'])
-    ->name('verification.verify');
+    })->middleware(['auth:sanctum', 'signed'])->name('verification.verify');
 
-    Route::post('/email/verification-notification', function (
-        Request $request
-    ) {
-
-        $request
-            ->user()
-            ->sendEmailVerificationNotification();
-
+    Route::post('/email/verification-notification', function (Request $request) {
+        $request->user()->sendEmailVerificationNotification();
         return response()->json([
             'success' => true,
             'message' => 'Lien de vérification envoyé'
         ]);
-    })
-    ->middleware([
-        'auth:sanctum',
-        'throttle:6,1'
-    ]);
+    })->middleware(['auth:sanctum', 'throttle:6,1']);
 
-    /*
-    |--------------------------------------------------------------------------
-    | ROUTES PROTEGEES
-    |--------------------------------------------------------------------------
-    */
+    // Routes protégées
+    Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+        // Auth
+        Route::get('/profile', [AuthController::class, 'profile']);
+        Route::get('/me', [AuthController::class, 'profile']);
+        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::post('/change-password', [AuthController::class, 'changePassword']);
+        
+        Route::post('/refresh-token', function (Request $request) {
+            $request->user()->tokens()->delete();
+            $token = $request->user()->createToken('auth_token')->plainTextToken;
+            return response()->json([
+                'success' => true,
+                'token' => $token,
+                'token_type' => 'Bearer'
+            ]);
+        });
 
-    Route::middleware([
-        'auth:sanctum',
-        'verified'
-    ])->group(function () {
+        // Users
+        Route::apiResource('users', UserController::class);
+        Route::post('/users/upload-photo', [UserController::class, 'uploadPhoto']);
+        Route::put('/users/{id}', [UserController::class, 'update']);
 
-        /*
-        |--------------------------------------------------------------------------
-        | AUTH
-        |--------------------------------------------------------------------------
-        */
+        // Services (protégés)
+        Route::get('/mes-services', [ServiceController::class, 'myServices']);
+        Route::apiResource('services', ServiceController::class);
 
-        Route::get(
-            '/profile',
-            [AuthController::class, 'profile']
-        );
+        // Reservations
+        Route::apiResource('reservations', ReservationController::class);
 
-        Route::get(
-            '/me',
-            [AuthController::class, 'profile']
-        );
+        // Avis
+        Route::apiResource('avis', AvisController::class);
+        Route::patch('/avis/{id}/signaler', [AvisController::class, 'signaler']);
 
-        Route::post(
-            '/logout',
-            [AuthController::class, 'logout']
-        );
+        // Categories (CRUD complet pour admin)
+        Route::apiResource('categories', CategoriController::class);
 
-        Route::post(
-            '/refresh-token',
-            function (Request $request) {
-
-                $request
-                    ->user()
-                    ->tokens()
-                    ->delete();
-
-                $token = $request
-                    ->user()
-                    ->createToken('auth_token')
-                    ->plainTextToken;
-
-                return response()->json([
-                    'success' => true,
-                    'token' => $token,
-                    'token_type' => 'Bearer'
-                ]);
-            }
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | USERS
-        |--------------------------------------------------------------------------
-        */
-
-        Route::apiResource(
-            'users',
-            UserController::class
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | SERVICES
-        |--------------------------------------------------------------------------
-        */
-
-        Route::apiResource(
-            'services',
-            ServiceController::class
-        );
-
-        Route::get(
-            '/mes-services',
-            [ServiceController::class, 'myServices']
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | RESERVATIONS
-        |--------------------------------------------------------------------------
-        */
-
-        Route::apiResource(
-            'reservations',
-            ReservationController::class
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | AVIS
-        |--------------------------------------------------------------------------
-        */
-
-        Route::apiResource(
-            'avis',
-            AvisController::class
-        );
-         Route::patch('/avis/{id}/signaler', [AvisController::class, 'signaler']); // Route pour signaler
-
-        /*
-        |--------------------------------------------------------------------------
-        | CATEGORIES
-        |--------------------------------------------------------------------------
-        */
-
-        Route::apiResource(
-            'categories',
-            CategoriController::class
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | MESSAGES
-        |--------------------------------------------------------------------------
-        */
-
-        Route::apiResource(
-            'messages',
-            MessageController::class
-        );
-         Route::get('/messages/conversations', [MessageController::class, 'conversations']);
+        // Messages
+        Route::apiResource('messages', MessageController::class);
+        Route::get('/messages/conversations', [MessageController::class, 'conversations']);
         Route::get('/messages/user/{userId}', [MessageController::class, 'messagesWithUser']);
 
-        /*
-        |--------------------------------------------------------------------------
-        | NOTIFICATIONS
-        |--------------------------------------------------------------------------
-        */
+        // Notifications
+        Route::apiResource('notifications', NotificationController::class);
+        Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
 
-        Route::apiResource(
-            'notifications',
-            NotificationController::class
-        );
-         Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+        // Statistiques Admin
+        Route::get('/admin/statistiques', [StatistiqueController::class, 'index']);
 
-        /*
-        |--------------------------------------------------------------------------
-        | STATISTIQUES ADMIN
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get(
-            '/admin/statistiques',
-            [StatistiqueController::class, 'index']
-        );
-
-          // Upload photo de profil
-            Route::post('/users/upload-photo', [UserController::class, 'uploadPhoto']);
-            
-            // Changer le mot de passe
-            Route::post('/auth/change-password', [AuthController::class, 'changePassword']);
-            
-            // Mettre à jour le profil
-            Route::put('/users/{id}', [UserController::class, 'update']);
-
-        /*
-        |--------------------------------------------------------------------------
-        | APPLICATIONS TEST
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get('/applications', function () {
-
+        // Test applications
+        Route::get('/applications', function (Request $request) {
             return response()->json([
                 'success' => true,
                 'message' => 'Route applications OK',
-                'user' => auth()->user(),
+                'user' => $request->user(),
             ]);
         });
     });
@@ -272,33 +136,21 @@ Route::prefix('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware([
-    'auth:sanctum',
-    'admin'
-])->get('/test-admin', function () {
-
+Route::middleware(['auth:sanctum', 'admin'])->get('/test-admin', function () {
     return response()->json([
         'success' => true,
         'message' => 'Middleware Admin OK'
     ]);
 });
 
-Route::middleware([
-    'auth:sanctum',
-    'prestataire'
-])->get('/test-prestataire', function () {
-
+Route::middleware(['auth:sanctum', 'prestataire'])->get('/test-prestataire', function () {
     return response()->json([
         'success' => true,
         'message' => 'Middleware Prestataire OK'
     ]);
 });
 
-Route::middleware([
-    'auth:sanctum',
-    'demandeur'
-])->get('/test-demandeur', function () {
-
+Route::middleware(['auth:sanctum', 'demandeur'])->get('/test-demandeur', function () {
     return response()->json([
         'success' => true,
         'message' => 'Middleware Demandeur OK'

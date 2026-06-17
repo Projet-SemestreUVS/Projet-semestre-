@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceRequest;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -30,7 +31,7 @@ class ServiceController extends Controller
         }
 
         // Filtre par statut (admin seulement)
-        if ($request->has('statut') && auth()->user()?->role === 'admin') {
+        if ($request->has('statut') && Auth::user()?->role === 'admin') {
             $query->where('statut', $request->statut);
         }
 
@@ -73,7 +74,7 @@ class ServiceController extends Controller
 
         $service = Service::create([
             // Si authentifié, utiliser l'utilisateur courant, sinon permettre `user_id` fourni ou fallback au user 101
-            'user_id' => auth()->id() ?? ($data['user_id'] ?? 101),
+            'user_id' => Auth::id() ?? ($data['user_id'] ?? 101),
             'categorie_id' => $data['categorie_id'] ?? null,
             'titre' => $data['titre'],
             'description' => $data['description'],
@@ -93,8 +94,8 @@ class ServiceController extends Controller
     public function update(ServiceRequest $request, Service $service)
     {
         // Si un utilisateur est authentifié, vérifier la propriété; sinon autoriser (mode test)
-        if (auth()->check()) {
-            if (auth()->id() !== $service->user_id && auth()->user()?->role !== 'admin') {
+        if (Auth::check()) {
+            if (Auth::id() !== $service->user_id && Auth::user()?->role !== 'admin') {
                 return response()->json(['message' => 'Non autorisé'], 403);
             }
         }
@@ -132,8 +133,8 @@ class ServiceController extends Controller
     public function destroy(Service $service)
     {
         // Comme pour update : si authentifié vérifie la propriété, sinon autorise (mode test)
-        if (auth()->check()) {
-            if (auth()->id() !== $service->user_id && auth()->user()?->role !== 'admin') {
+        if (Auth::check()) {
+            if (Auth::id() !== $service->user_id && Auth::user()?->role !== 'admin') {
                 return response()->json(['message' => 'Non autorisé'], 403);
             }
         }
@@ -154,7 +155,7 @@ class ServiceController extends Controller
     // Mes services
     public function myServices()
     {
-        $services = Service::where('user_id', auth()->id())
+        $services = Service::where('user_id', Auth::id())
             ->with('categorie')
             ->latest()
             ->paginate(10);

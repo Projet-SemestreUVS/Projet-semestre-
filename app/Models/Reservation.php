@@ -1,33 +1,40 @@
 <?php
+// app/Models/Reservation.php
 
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Service extends Model
+class Reservation extends Model
 {
     protected $fillable = [
-        'nom',
-        'description',
-        'prix',
-        'duree',
-        'categorie_id',
+        'service_id',
+        'demandeur_id',
         'prestataire_id',
-        'image'
+        'date_debut',
+        'statut',
+        'commentaire',
+        'prix_total',
     ];
+
+    protected $casts = [
+        'date_debut' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    public function service()
+    {
+        return $this->belongsTo(Service::class, 'service_id');
+    }
+
+    public function demandeur()
+    {
+        return $this->belongsTo(User::class, 'demandeur_id');
+    }
 
     public function prestataire()
     {
         return $this->belongsTo(User::class, 'prestataire_id');
-    }
-
-    public function categorie()
-    {
-        return $this->belongsTo(Categori::class, 'categorie_id');
-    }
-
-    public function reservations()
-    {
-        return $this->hasMany(Reservation::class);
     }
 }
