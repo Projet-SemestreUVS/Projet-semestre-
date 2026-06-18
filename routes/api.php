@@ -70,7 +70,7 @@ Route::prefix('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::get('/profile', [AuthController::class, 'profile']);
 
@@ -317,6 +317,7 @@ Route::prefix('auth')->group(function () {
             'avis',
             AvisController::class
         );
+        
          Route::patch('/avis/{id}/signaler', [AvisController::class, 'signaler']); // Route pour signaler
 
         /*
@@ -325,11 +326,15 @@ Route::prefix('auth')->group(function () {
         |--------------------------------------------------------------------------
         */
 
-        Route::apiResource(
-            'categories',
-            CategoriController::class
-        );
+       
+   Route::prefix('auth')->middleware('auth:sanctum')->group(function(){
 
+    Route::apiResource(
+        'categories',
+        CategoriController::class
+    );
+
+});
         /*
         |--------------------------------------------------------------------------
         | MESSAGES

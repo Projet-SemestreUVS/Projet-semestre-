@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AdminMiddleware
 {
-    public function handle(Request $request, Closure $next): Response
+    /*public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check() && Auth::user()->role === 'admin') {
             return $next($request);
@@ -19,5 +19,16 @@ class AdminMiddleware
             'success' => false,
             'message' => 'Accès refusé. Autorisation Administrateur requise.'
         ], 403);
+    }*/
+
+    public function handle(Request $request, Closure $next)
+    {
+
+        dd([
+            "token" => $request->bearerToken(),
+            "user" => Auth::user(),
+            "role" => Auth::user()?->role
+        ]);
+
     }
 }

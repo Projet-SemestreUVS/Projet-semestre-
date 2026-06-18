@@ -22,23 +22,31 @@ class CategoriController extends Controller
      * Ajouter une catégorie
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'nom' => 'required'
-        ]);
+{
 
-        $categorie = Category::create([
-            'nom' => $request->nom,
-            'description' => $request->description,
-            'icone' => $request->icone,
-            'parent_id' => $request->parent_id
-        ]);
+    $data = $request->validate([
+        'nom'=>'required|string',
+        'description'=>'nullable|string',
+        'icone'=>'nullable|image|mimes:png,jpg,jpeg,webp|max:2048',
+    ]);
 
-        return response()->json([
-            'message' => 'Categorie ajoutée',
-            'data' => $categorie
-        ], 201);
+
+    if($request->hasFile('icone')){
+
+        $path = $request->file('icone')
+              ->store('categories','public');
+
+        $data['icone']=$path;
+
     }
+
+
+    $category = Category::create($data);
+
+
+    return response()->json($category);
+
+}
 
     /**
      * Afficher une catégorie
@@ -53,17 +61,42 @@ class CategoriController extends Controller
     /**
      * Modifier une catégorie
      */
-    public function update(Request $request, string $id)
-    {
-        $categorie = Category::findOrFail($id);
+  public function update(Request $request,$id)
+{
 
-        $categorie->update($request->all());
+$category = Category::findOrFail($id);
 
-        return response()->json([
-            'message' => 'Categorie modifiée',
-            'data' => $categorie
-        ]);
-    }
+
+$data=$request->validate([
+'nom'=>'required|string',
+'description'=>'nullable|string',
+'icone'=>'nullable|image|mimes:png,jpg,jpeg,webp|max:2048'
+]);
+
+
+
+if($request->hasFile('icone')){
+
+
+$path=$request->file('icone')
+->store('categories','public');
+
+
+$data['icone']=$path;
+
+
+}
+
+
+
+$category->update($data);
+
+
+
+return response()->json($category);
+
+
+}
 
     /**
      * Supprimer une catégorie
