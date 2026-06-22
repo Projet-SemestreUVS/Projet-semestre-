@@ -40,7 +40,6 @@ Route::get('/test', function () {
 | AUTHENTIFICATION
 |--------------------------------------------------------------------------
 */
-
 Route::prefix('auth')->group(function () {
 
     /*
@@ -50,7 +49,6 @@ Route::prefix('auth')->group(function () {
     */
 
     Route::post('/register', [AuthController::class, 'register']);
-
     Route::post('/login', [AuthController::class, 'login']);
 
     /*

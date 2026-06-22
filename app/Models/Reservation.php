@@ -3,31 +3,39 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use App\Models\Service;
+use App\Models\Avis;
 
-class Service extends Model
+class Reservation extends Model
 {
     protected $fillable = [
-        'nom',
-        'description',
-        'prix',
-        'duree',
-        'categorie_id',
+        'demandeur_id',
         'prestataire_id',
-        'image'
+        'service_id',
+        'date_debut',
+        'date_fin',
+        'statut',
+        'commentaire'
     ];
+
+    public function demandeur()
+    {
+        return $this->belongsTo(User::class, 'demandeur_id');
+    }
 
     public function prestataire()
     {
         return $this->belongsTo(User::class, 'prestataire_id');
     }
 
-    public function categorie()
+    public function service()
     {
-        return $this->belongsTo(Categori::class, 'categorie_id');
+        return $this->belongsTo(Service::class);
     }
 
-    public function reservations()
+    public function avis()
     {
-        return $this->hasMany(Reservation::class);
+        return $this->hasOne(Avis::class, 'reservation_id');
     }
 }

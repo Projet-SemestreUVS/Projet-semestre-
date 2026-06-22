@@ -1,28 +1,35 @@
 <?php
 
-namespace App\Mail;
+return [
 
-use App\Models\Reservation;
-use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
+    'default' => env('MAIL_MAILER', 'smtp'),
 
-class ReservationStatusMail extends Mailable
-{
-    use Queueable, SerializesModels;
+    'mailers' => [
 
-    public $reservation;
-    public $user;
+        'smtp' => [
+            'transport' => 'smtp',
+            'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+            'port' => env('MAIL_PORT', 587),
+            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            'username' => env('MAIL_USERNAME'),
+            'password' => env('MAIL_PASSWORD'),
+            'timeout' => null,
+        ],
 
-    public function __construct(Reservation $reservation, $user)
-    {
-        $this->reservation = $reservation;
-        $this->user = $user;
-    }
+        'log' => [
+            'transport' => 'log',
+            'channel' => env('MAIL_LOG_CHANNEL'),
+        ],
 
-    public function build()
-    {
-        return $this->subject('Mise à jour réservation KAY JOB')
-                    ->view('emails.reservation-status');
-    }
-}
+        'array' => [
+            'transport' => 'array',
+        ],
+
+    ],
+
+    'from' => [
+        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+        'name' => env('MAIL_FROM_NAME', 'Laravel'),
+    ],
+
+];

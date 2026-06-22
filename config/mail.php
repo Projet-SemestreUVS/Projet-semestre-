@@ -1,32 +1,112 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Ajouter un avis</title>
-</head>
-<body>
+<?php
 
-    <h1>Ajouter un avis</h1>
+return [
 
-    <form method="POST" action="/api/avis">
-        @csrf
+    /*
+    |--------------------------------------------------------------------------
+    | Default Mailer
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the default mailer that is used to send any
+    | email messages sent by your application. Alternative mailers may be
+    | setup and used as needed; however, this mailer will be used by
+    | default.
+    |
+    */
 
-        <label>Réservation ID</label><br>
-        <input type="number" name="reservation_id"><br><br>
+    'default' => env('MAIL_MAILER', 'smtp'),
 
- /       <label>Auteur ID</label><br>
-        <input type="number" name="auteur_id"><br><br>
+    /*
+    |--------------------------------------------------------------------------
+    | Mailer Configurations
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure all of the mailers used by your application plus
+    | their respective settings. Several examples have already been configured
+    | for you and you are free to add your own as your application requires.
+    |
+    |
+    | Laravel supports a variety of mail "transport" drivers to be used while
+    | sending an e-mail. You will specify which one is used for your mailers.
+    |
+    */
 
-        <label>Cible ID</label><br>
-        <input type="number" name="cible_id"><br><br>
+    'mailers' => [
 
-        <label>Note</label><br>
-        <input type="number" name="note" min="1" max="5"><br><br>
+        'smtp' => [
+            'transport' => 'smtp',
+            'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+            'port' => env('MAIL_PORT', 587),
+            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            'username' => env('MAIL_USERNAME'),
+            'password' => env('MAIL_PASSWORD'),
+            'timeout' => null,
+            'auth_mode' => null,
+        ],
 
-        <label>Commentaire</label><br>
-        <textarea name="commentaire"></textarea><br><br>
+        'ses' => [
+            'transport' => 'ses',
+        ],
 
-        <button type="submit">Envoyer</button>
-    </form>
+        'mailgun' => [
+            'transport' => 'mailgun',
+        ],
 
-</body>
-</html>
+        'postmark' => [
+            'transport' => 'postmark',
+        ],
+
+        'sendmail' => [
+            'transport' => 'sendmail',
+            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs'),
+        ],
+
+        'log' => [
+            'transport' => 'log',
+            'channel' => env('MAIL_LOG_CHANNEL'),
+        ],
+
+        'array' => [
+            'transport' => 'array',
+        ],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Global "From" Address
+    |--------------------------------------------------------------------------
+    |
+    | You may wish for all e-mails sent by your application to be sent from
+    | the same address. Here, you may specify a name and address that is
+    | used globally for all e-mails that are sent by your application.
+    |
+    */
+
+    'from' => [
+        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+        'name' => env('MAIL_FROM_NAME', 'Example'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Markdown Mail Settings
+    |--------------------------------------------------------------------------
+    |
+    | If you are using Markdown based email rendering, you may configure your
+    | theme and component paths here, allowing you to customize the design
+    | of the emails. Or, you may simply stick with the Laravel defaults.
+    |
+    */
+
+    'markdown' => [
+
+        'theme' => 'default',
+
+        'paths' => [
+            resource_path('views/vendor/mail'),
+        ],
+
+    ],
+
+];
