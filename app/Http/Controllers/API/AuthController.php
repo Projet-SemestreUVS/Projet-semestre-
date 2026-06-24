@@ -114,95 +114,51 @@ class AuthController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-
             'email' => 'required|email',
-
             'password' => 'required'
-
         ]);
 
         if ($validator->fails()) {
-
             return response()->json([
-
                 'success' => false,
-                
-                'message' => 'Erreur de validation', // CORRECTION: Ajout du message
-
+                'message' => 'Erreur de validation',
                 'errors' => $validator->errors()
-
             ], 422);
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | VERIFICATION EMAIL
-        |--------------------------------------------------------------------------
-        */
 
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
-
             return response()->json([
-
                 'success' => false,
-
                 'message' => 'Email incorrect'
-
             ], 401);
         }
-        
-        // CORRECTION: Vérifier si l'email est vérifié (optionnel, décommentez si nécessaire)
-        /*
-        if (!$user->hasVerifiedEmail()) {
+
+        /*if (!$user->hasVerifiedEmail()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Veuillez vérifier votre email avant de vous connecter'
+                'message' => 'Email non vérifié'
             ], 403);
-        }
-        */
-
-        /*
-        |--------------------------------------------------------------------------
-        | VERIFICATION PASSWORD
-        |--------------------------------------------------------------------------
-        */
+        }*/
 
         if (!Hash::check($request->password, $user->password)) {
-
             return response()->json([
-
                 'success' => false,
-
                 'message' => 'Mot de passe incorrect'
-
             ], 401);
         }
 
-        // CORRECTION: Supprimer les anciens tokens pour éviter les fuites (optionnel)
         $user->tokens()->delete();
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREATION TOKEN
-        |--------------------------------------------------------------------------
-        */
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-
             'success' => true,
-
             'message' => 'Connexion réussie',
-
             'token' => $token,
-
             'token_type' => 'Bearer',
-
             'user' => $user
-
         ], 200);
     }
 
